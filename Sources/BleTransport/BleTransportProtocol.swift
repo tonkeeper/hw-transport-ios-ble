@@ -17,9 +17,7 @@ public typealias OptionalBleErrorResponse = ((BleTransportError?)->())
 public typealias ErrorResponse = ((Error)->())
 
 public protocol BleTransportProtocol {
-    
-    static var shared: BleTransportProtocol { get }
-    
+        
     var isBluetoothAvailable: Bool { get }
     var isConnected: Bool { get }
     

@@ -29,9 +29,7 @@ extension BleTransport: BleModuleDelegate {
 @objc public class BleTransport: NSObject, BleTransportProtocol {
     
     typealias ConnectFunction = (PeripheralIdentifier) -> ()
-    
-    public static var shared: BleTransportProtocol = BleTransport(configuration: nil, debugMode: false)
-    
+        
     private let bleModule: BleModule
     
     private let debugMode: Bool
@@ -76,7 +74,7 @@ extension BleTransport: BleModuleDelegate {
     
     // MARK: - Initialization
     
-    private init(configuration: BleTransportConfiguration?, debugMode: Bool) {
+    public init(configuration: BleTransportConfiguration?, debugMode: Bool) {
         self.bleModule = BleModule()
         self.configuration = configuration ?? BleTransportConfiguration.defaultConfig()
         self.debugMode = debugMode
@@ -549,7 +547,7 @@ extension BleTransport: BleModuleDelegate {
             return
         }
         
-        BleTransport.shared.exchange(apdu: apdu) { [weak self] result in
+        exchange(apdu: apdu) { [weak self] result in
             guard let self = self else { failure(BleTransportError.lowerLevelError(description: "closeApp -> self is nil")); return }
             guard let disconnectedCallback = self.disconnectedCallback else { failure(BleTransportError.lowerLevelError(description: "closeApp -> disconnectedCallback is nil")); return }
             
@@ -585,7 +583,7 @@ extension BleTransport: BleModuleDelegate {
             return
         }
         
-        BleTransport.shared.exchange(apdu: apdu) { [weak self] result in
+        exchange(apdu: apdu) { [weak self] result in
             guard let self = self else { failure(BleTransportError.lowerLevelError(description: "closeApp -> self is nil")); return }
             guard let disconnectedCallback = self.disconnectedCallback else { failure(BleTransportError.lowerLevelError(description: "closeApp -> disconnectedCallback is nil")); return }
             
@@ -667,7 +665,7 @@ extension BleTransport {
     
     public func scan(duration: TimeInterval) -> AsyncThrowingStream<[PeripheralInfo], Error> {
         return AsyncThrowingStream { continuation in
-            BleTransport.shared.scan(duration: duration) { devices in
+            scan(duration: duration) { devices in
                 continuation.yield(devices)
             } stopped: { error in
                 if let error = error {
